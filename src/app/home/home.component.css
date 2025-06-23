@@ -1,0 +1,8 @@
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 колонки равной ширины */
+    gap: 50px; /* Расстояние между карточками */
+    padding-left: 20px;
+    padding-right: 55px;
+    margin-top: 40px;
+}

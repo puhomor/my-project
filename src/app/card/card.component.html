@@ -1,20 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div class="card">
-        <div class="picture"></div>
-        <h2>What is Lorem Ipsum?</h2>
-        <p class="text" [class.short]="!isTextExpanded">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-        </p>
-        <button (click)="toggleText()">
-            {{isTextExpanded ? 'LESS' : 'MORE'}} <!-- смена текста кнопки -->
-        </button>
+<div class="card">
+
+    <div class="picture">
+        <img [src]="cardData.imageUrl" [alt]="cardData.title">
     </div>
-</body>
-</html>
+    <h2>{{cardData.title}}</h2>
+
+    <div class="text-conteiner" [class.short]="!isTextExpanded">
+        <p class="text">
+            {{cardData.description}}
+        </p>
+    </div>
+
+    <button (click)="toggleText()">
+        {{isTextExpanded ? 'LESS' : 'MORE'}} <!-- смена текста кнопки / если true - LESS / если false - MORE-->        
+    </button>
+
+</div>

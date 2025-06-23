@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-card',
@@ -11,4 +11,5 @@ export class CardComponent {
   toggleText() { // метод, который меняет состояние
     this.isTextExpanded = !this.isTextExpanded;
   }
+  @Input() cardData: any; 
 }

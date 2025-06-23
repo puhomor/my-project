@@ -1,0 +1,24 @@
+<div class="cards-grid">
+    <app-card *ngFor="let item of data" [cardData]="item"></app-card>
+</div>
+<!-- 
+*ngFor - это Angular-директива для создания повторяющихся элементов
+let item of data означает:
+Возьми массив data из компонента HomeComponent
+Для каждого элемента массива:
+Создай переменную item
+Вставь один компонент <app-card>
+Передай текущий элемент массива в эту карточку
+[cardData] - это входное свойство (@Input()) компонента CardComponent
+="item" - передаёт текущий элемент массива в карточку
+
+Если в data 6 объектов, то после обработки получится:
+<div class="cards-grid">
+  <app-card [cardData]="data[0]"></app-card>
+  <app-card [cardData]="data[1]"></app-card>
+  <app-card [cardData]="data[2]"></app-card>
+  <app-card [cardData]="data[3]"></app-card>
+  <app-card [cardData]="data[4]"></app-card>
+  <app-card [cardData]="data[5]"></app-card>
+</div>
+ -->
