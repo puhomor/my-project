@@ -10,9 +10,6 @@
             {{cardData.description}}
         </p>
     </div>
-
-    <button (click)="toggleText()">
-        {{isTextExpanded ? 'LESS' : 'MORE'}} <!-- смена текста кнопки / если true - LESS / если false - MORE-->        
-    </button>
-
+    
+    <a [routerLink]="['/article', cardData.id]" class="more-link">Подробнее</a>
 </div>

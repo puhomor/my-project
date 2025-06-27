@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { CardComponent } from "../card/card.component";
 import { CommonModule } from '@angular/common';
+import { ArticlesService } from "../articles.service";
+import { ArticleCard } from '../card/article-card';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-home',
@@ -9,36 +12,26 @@ import { CommonModule } from '@angular/common';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  data =[
-    {
-      imageUrl: 'https://media2.dev.to/dynamic/image/width=1000,height=420,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fzrwp18mbw5z9g9crywtd.png',
-      title: 'Taking Time to Breathe: A New Chapter Begins',
-      description: 'My life update means exploring new opportunities in AI tools and content strategy'
-    },
-    {
-      imageUrl: 'https://media2.dev.to/dynamic/image/width=1000,height=420,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fzrwp18mbw5z9g9crywtd.png',
-      title: 'Taking Time to Breathe: A New Chapter Begins',
-      description: 'My life update means exploring new opportunities in AI tools and content strategy'
-    },
-    {
-      imageUrl: 'https://media2.dev.to/dynamic/image/width=1000,height=420,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fzrwp18mbw5z9g9crywtd.png',
-      title: 'Taking Time to Breathe: A New Chapter Begins',
-      description: 'My life update means exploring new opportunities in AI tools and content strategy'
-    },
-    {
-      imageUrl: 'https://media2.dev.to/dynamic/image/width=1000,height=420,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fzrwp18mbw5z9g9crywtd.png',
-      title: 'Taking Time to Breathe: A New Chapter Begins',
-      description: 'My life update means exploring new opportunities in AI tools and content strategy'
-    },
-    {
-      imageUrl: 'https://media2.dev.to/dynamic/image/width=1000,height=420,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fzrwp18mbw5z9g9crywtd.png',
-      title: 'Taking Time to Breathe: A New Chapter Begins',
-      description: 'My life update means exploring new opportunities in AI tools and content strategy'
-    },
-    {
-      imageUrl: 'https://media2.dev.to/dynamic/image/width=1000,height=420,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fzrwp18mbw5z9g9crywtd.png',
-      title: 'Taking Time to Breathe: A New Chapter Begins',
-      description: 'My life update means exploring new opportunities in AI tools and content strategy'
-    },
-  ]
+  page = 0; // начинаем с нулевой страницы
+  data: ArticleCard[] = []; // Массив для данных
+  constructor(
+    private articlesService: ArticlesService,
+    private changeDetectorRef: ChangeDetectorRef) {} 
+  // конструктор дает компоненту доступ к ArticlesService
+  ngOnInit() { // метод, который вызывается 1 раз, когда компонент готов к работе
+    this.articlesService.getArticlesList(this.page).subscribe({
+      next: (data: any) => {
+        this.data = [] // очищаем массив, чтобы данные не дублировались
+        this.data = data.map((item: any) => 
+          new ArticleCard(
+            item.id,
+            item.title,
+            item.description,
+            item.social_image
+          )
+        );
+        this.changeDetectorRef.detectChanges(); // метод по обнаружению измменений
+      }
+    });
+  }
 }
