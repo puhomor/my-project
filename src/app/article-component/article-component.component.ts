@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ArticlesService } from '../articles.service';
 import { Article } from './article';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-article-component',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './article-component.component.html',
   styleUrl: './article-component.component.css'
 })

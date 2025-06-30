@@ -1,6 +1,7 @@
 <div class="cards-grid">
     <app-card *ngFor="let item of data" [cardData]="item"></app-card>
 </div>
+<div *ngIf = "loading"> Loading...</div>
 <!-- 
 *ngFor - это Angular-директива для создания повторяющихся элементов
 let item of data означает:
