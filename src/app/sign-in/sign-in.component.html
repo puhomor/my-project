@@ -1,0 +1,20 @@
+<form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label>Email</label>
+        <input formControlName="email" type="email">
+        <span *ngIf="signInForm.get('email')?.touched && signInForm.get('email')?.invalid" class="error">
+            {{signInForm.get('email')?.errors?.['required'] ? 'Email обязателен' : 'Некорректный email'}}
+        </span>
+    </div>
+    <div>
+        <label>Пароль</label>
+        <input formControlName="password" type="password">
+        <span *ngIf="signInForm.get('password')?.touched && signInForm.get('password')?.invalid" class="error">
+          {{ signInForm.get('password')?.errors?.['required'] ? 'Пароль обязателен' :
+             signInForm.get('password')?.errors?.['minlength'] ? 'Минимум 8 символов' :
+             signInForm.get('password')?.errors?.['maxlength'] ? 'Максимум 20 символов' :
+             'Только буквы, цифры или спецсимволы' }}
+        </span>
+      </div>
+    <button type="submit" [disabled]="!signInForm.valid">Войти</button>
+</form>

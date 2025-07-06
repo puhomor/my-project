@@ -1,0 +1,74 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label>Имя</label>
+    <input formControlName="firstName" type="text">
+    <span *ngIf="registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid" class="error">
+      {{ registerForm.get('firstName')?.errors?.['required'] ? 'Имя обязательно' :
+         registerForm.get('firstName')?.errors?.['pattern'] ? 'Только буквы' :
+         'Максимум 15 символов' }}
+    </span>
+  </div>
+
+  <div>
+    <label>Фамилия</label>
+    <input formControlName="lastName" type="text">
+    <span *ngIf="registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid" class="error">
+      {{ registerForm.get('lastName')?.errors?.['required'] ? 'Фамилия обязательна' :
+         registerForm.get('lastName')?.errors?.['pattern'] ? 'Только буквы и тире' :
+         'Максимум 25 символов' }}
+    </span>
+  </div>
+
+  <div>
+    <label>Отчество</label>
+    <input formControlName="middleName" type="text">
+    <span *ngIf="registerForm.get('middleName')?.touched && registerForm.get('middleName')?.invalid" class="error">
+      {{ registerForm.get('middleName')?.errors?.['required'] ? 'Отчество обязательно' :
+         registerForm.get('middleName')?.errors?.['pattern'] ? 'Только буквы' :
+         'Максимум 25 символов' }}
+    </span>
+  </div>
+
+  <div>
+    <label>Пол</label>
+    <input type="radio" id="male" value="male" formControlName="gender">
+    <label for="male">М</label>
+    <input type="radio" id="female" value="female" formControlName="gender">
+    <label for="female">Ж</label>
+    <span *ngIf="registerForm.get('gender')?.touched && registerForm.get('gender')?.invalid" class="error">
+      Выберите пол
+    </span>
+  </div>
+
+  <div>
+    <label>Email</label>
+    <input formControlName="email" type="email">
+    <span *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" class="error">
+      {{ registerForm.get('email')?.errors?.['required'] ? 'Email обязателен' : 'Некорректный email' }}
+    </span>
+  </div>
+
+  <div>
+    <label>Пароль</label>
+    <input formControlName="password" type="password">
+    <span *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" class="error">
+      {{ registerForm.get('password')?.errors?.['required'] ? 'Пароль обязателен' :
+         registerForm.get('password')?.errors?.['minlength'] ? 'Минимум 8 символов' :
+         registerForm.get('password')?.errors?.['maxlength'] ? 'Максимум 20 символов' :
+         registerForm.get('password')?.errors?.['pattern'] ? 'Только буквы, цифры или спецсимволы' : '' }}
+    </span>
+  </div>
+
+  <div>
+    <label>Подтверждение пароля</label>
+    <input formControlName="confirmPassword" type="password">
+    <span *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.errors?.['mismatch']" class="error">
+      Пароли не совпадают
+    </span>
+    <span *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.errors?.['required']" class="error">
+      Подтверждение обязательно
+    </span>
+  </div>
+
+  <button type="submit" [disabled]="!registerForm.valid">Зарегистрироваться</button>
+</form>
