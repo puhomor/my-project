@@ -54,11 +54,17 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      this.authService.signUp({
-        email: this.registerForm.value.email,
-        password: this.registerForm.value.password
+      const { email, password, firstName, lastName, middleName } = this.registerForm.value;
+      const name = `${firstName} ${lastName} ${middleName}`; // Формируем ФИО
+      this.authService.signUp(email, password, name).subscribe({
+        next: () => {
+          console.log('Форма регистрации отправлена:', this.registerForm.value);
+          this.router.navigate(['']); // Перенаправление на главную страницу
+        },
+        error: (error) => {
+          console.error('Registration error:', error);
+        }
       });
-      console.log('Форма регистрации отправлена:', this.registerForm.value);
     } else {
       this.registerForm.markAllAsTouched();
     }

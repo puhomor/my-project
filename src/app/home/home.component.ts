@@ -22,7 +22,7 @@ export class HomeComponent {
     private changeDetectorRef: ChangeDetectorRef) {} 
   // конструктор дает компоненту доступ к ArticlesService
   ngOnInit() { // метод, который вызывается 1 раз, когда компонент готов к работе
-    fromEvent(window, 'scrol')
+    fromEvent(window, 'scroll')
     .pipe(
       debounceTime(500),
       startWith(undefined),
