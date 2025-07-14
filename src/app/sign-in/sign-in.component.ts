@@ -27,12 +27,18 @@ export class SignInComponent {
     })
   }
   onSubmit() {
-    if(this.signInForm.valid) {
-      this.authService.signIn({
-        email: this.signInForm.value.email,
-        password: this.signInForm.value.password
+    if (this.signInForm.valid) {
+      const { email, password } = this.signInForm.value;
+      this.authService.signIn(email, password).subscribe({
+        next: () => {
+          this.router.navigate(['']);
+        },
+        error: (error) => {
+          console.error('Sign-in error:', error);
+        }
       });
-      console.log('Форма авторизации отправлена:', this.signInForm.value);
+    } else {
+      this.signInForm.markAllAsTouched();
     }
   }
 }

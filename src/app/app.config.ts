@@ -4,6 +4,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { initializeApp } from "firebase/app";
 import { routes } from './app.routes';
+import { provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB-2ZgDTDAp3o-SY2XZlworqoiaK9sPoZ4",
@@ -19,6 +22,9 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes), 
-    provideHttpClient()
+    provideHttpClient(),
+    provideFirebaseApp(() => app),
+    provideAuth(() => getAuth()),
+    { provide: FIREBASE_OPTIONS, useValue: firebaseConfig }
   ]
 };

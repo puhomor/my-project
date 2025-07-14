@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { from } from 'rxjs';
 
@@ -12,11 +12,21 @@ export class AuthService {
 
   constructor(private afAuth: AngularFireAuth) { }
 
-  signIn(_credentials: { email: string, password: string }): void {
-    this.isLoggedIn$$.next(true);
+  signIn(email: string, password: string): Observable<any> {
+    return from(this.afAuth.signInWithEmailAndPassword(email, password));
   }
 
   signUp(email: string, password: string, name: string): Observable<any> {
-    return from(this.afAuth.createUserWithEmailAndPassword(email, password));
+    return from(this.afAuth.createUserWithEmailAndPassword(email, password)).pipe(
+      tap((credential) => {
+        if (credential.user) {
+          credential.user.updateProfile({ displayName: name });
+        }
+      })
+    );
+  }
+
+  signOut(): Observable<any> {
+    return from(this.afAuth.signOut());
   }
 }

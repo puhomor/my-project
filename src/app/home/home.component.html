@@ -1,3 +1,7 @@
+<header>
+  {{userName}}
+  <button (click)="onSignOut()">Выход</button>
+</header>
 <div class="cards-grid">
     <app-card *ngFor="let item of data" [cardData]="item"></app-card>
 </div>
