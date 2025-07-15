@@ -15,6 +15,7 @@
              signInForm.get('password')?.errors?.['maxlength'] ? 'Максимум 20 символов' :
              'Только буквы, цифры или спецсимволы' }}
         </span>
-      </div>
+    </div>
     <button type="submit" [disabled]="!signInForm.valid">Войти</button>
+    <span *ngIf="errorText" class="error">{{ errorText }}</span>
 </form>

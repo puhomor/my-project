@@ -7,6 +7,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { Subject, debounceTime, filter, fromEvent, scan, startWith, switchMap, takeUntil, tap } from 'rxjs';
 import { getAuth } from '@angular/fire/auth';
 import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -19,11 +20,12 @@ export class HomeComponent {
   data: ArticleCard[] = []; // Массив для данных
   loading = false; 
   userName: string | null = null;
-  private ngUnsubscibe = new Subject<void>();
+  private ngUnsubscribe = new Subject<void>();
   constructor(
     private articlesService: ArticlesService,
     private changeDetectorRef: ChangeDetectorRef,
-    private authService: AuthService) {} 
+    private authService: AuthService,
+    private router: Router) {} 
   // конструктор дает компоненту доступ к ArticlesService
   ngOnInit() { // метод, который вызывается 1 раз, когда компонент готов к работе
     this.userName = getAuth().currentUser?.displayName || null;
@@ -61,7 +63,7 @@ export class HomeComponent {
         ));
         return allCards.concat(newCards);
       },[]),
-      takeUntil(this.ngUnsubscibe)
+      takeUntil(this.ngUnsubscribe)
     )
     .subscribe(allCards => {
       // Обрабатываем данные 
@@ -72,10 +74,16 @@ export class HomeComponent {
     });
   }
   ngOnDestroy() {
-    this.ngUnsubscibe.next();
-    this.ngUnsubscibe.complete();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
   onSignOut() {
-    this.authService.signOut().subscribe();
+    this.authService.signOut().pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe({
+      next: () => {
+        this.router.navigate(['auth/sign-in']);
+      }
+    });
   }
 }

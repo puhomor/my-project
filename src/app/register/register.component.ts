@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { Router, RouterModule } from '@angular/router';
+import { Subject, takeUntil, catchError } from 'rxjs';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -11,8 +13,10 @@ import { Router, RouterModule } from '@angular/router';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy {
   registerForm: FormGroup;
+  errorText: string | null = null;
+  private ngUnsubscribe = new Subject<void>();
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.registerForm = this.fb.group({
@@ -53,20 +57,29 @@ export class RegisterComponent {
   }
 
   onSubmit() {
+    this.errorText = null; // Очищаем ошибку перед отправкой
     if (this.registerForm.valid) {
       const { email, password, firstName, lastName, middleName } = this.registerForm.value;
-      const name = `${firstName} ${lastName} ${middleName}`; // Формируем ФИО
-      this.authService.signUp(email, password, name).subscribe({
+      const name = `${firstName} ${lastName} ${middleName}`;
+      this.authService.signUp(email, password, name).pipe(
+        catchError((error) => {
+          this.errorText = error.message || 'Ошибка при регистрации';
+          return throwError(() => error);
+        }),
+        takeUntil(this.ngUnsubscribe)
+      ).subscribe({
         next: () => {
           console.log('Форма регистрации отправлена:', this.registerForm.value);
-          this.router.navigate(['']); // Перенаправление на главную страницу
-        },
-        error: (error) => {
-          console.error('Registration error:', error);
+          this.router.navigate(['']);
         }
       });
     } else {
       this.registerForm.markAllAsTouched();
     }
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

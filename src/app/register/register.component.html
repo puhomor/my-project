@@ -71,4 +71,5 @@
   </div>
 
   <button type="submit" [disabled]="!registerForm.valid">Зарегистрироваться</button>
+  <span *ngIf="errorText" class="error">{{ errorText }}</span>
 </form>

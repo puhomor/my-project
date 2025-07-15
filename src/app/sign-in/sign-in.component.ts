@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { Subject, takeUntil, catchError } from 'rxjs';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
@@ -10,35 +12,48 @@ import { Router } from '@angular/router';
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.css'
 })
-export class SignInComponent {
+export class SignInComponent implements OnDestroy {
   signInForm!: FormGroup;
-  constructor(private fb : FormBuilder, private authService: AuthService, private router: Router) {
+  errorText: string | null = null;
+  private ngUnsubscribe = new Subject<void>();
+
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.signInForm = this.fb.group({
-      email : ['', [
+      email: ['', [
         Validators.required,
         Validators.email
       ]],
-      password : ['',[
+      password: ['', [
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9!@#$%^&*]+$'),
         Validators.minLength(8),
         Validators.maxLength(20)
       ]]
-    })
+    });
   }
+
   onSubmit() {
+    this.errorText = null; // Очищаем ошибку перед отправкой
     if (this.signInForm.valid) {
       const { email, password } = this.signInForm.value;
-      this.authService.signIn(email, password).subscribe({
+      this.authService.signIn(email, password).pipe(
+        catchError((error) => {
+          this.errorText = error.message || 'Ошибка при входе';
+          return throwError(() => error);
+        }),
+        takeUntil(this.ngUnsubscribe)
+      ).subscribe({
         next: () => {
           this.router.navigate(['']);
-        },
-        error: (error) => {
-          console.error('Sign-in error:', error);
         }
       });
     } else {
       this.signInForm.markAllAsTouched();
     }
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }
